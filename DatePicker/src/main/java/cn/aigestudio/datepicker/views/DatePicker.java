@@ -34,6 +34,7 @@ public class DatePicker extends LinearLayout {
 
 
     private OnDateSelectedListener onDateSelectedListener;// 日期多选后监听
+    private OnMonthChangeListener mOnMonthChangeListener;
 
     /**
      * 日期单选监听器
@@ -141,6 +142,9 @@ public class DatePicker extends LinearLayout {
             @Override
             public void onMonthChange(int month) {
                 tvMonth.setText(mLManager.titleMonth()[month - 1]);
+                //年份切换的时候会自动调用月份切换，所以不需要在年份切换里加监听
+                if(mOnMonthChangeListener!=null)
+                    mOnMonthChangeListener.onMonthChange(tvYear.getText().toString()+"-"+(month));
             }
 
             @Override
@@ -227,5 +231,16 @@ public class DatePicker extends LinearLayout {
                     "Current DPMode does not MULTIPLE! Please call setMode set DPMode to MULTIPLE!");
         }
         this.onDateSelectedListener = onDateSelectedListener;
+    }
+
+    public void setOnMonthChangeListener(OnMonthChangeListener onMonthChangeListener){
+        this.mOnMonthChangeListener = onMonthChangeListener;
+    }
+
+    /**
+     * 在月份切换的时候调用（MonthView中年切换的时候月份切换会调用）
+     */
+    public interface OnMonthChangeListener {
+        void onMonthChange(String month);
     }
 }

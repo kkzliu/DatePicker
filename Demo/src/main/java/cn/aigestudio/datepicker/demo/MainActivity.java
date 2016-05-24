@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import cn.aigestudio.datepicker.bizs.calendars.DPCManager;
@@ -188,6 +187,13 @@ public class MainActivity extends Activity {
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 dialog.getWindow().setContentView(picker, params);
                 dialog.getWindow().setGravity(Gravity.CENTER);
+
+                picker.setOnMonthChangeListener(new DatePicker.OnMonthChangeListener() {
+                    @Override
+                    public void onMonthChange(String month) {
+                        Toast.makeText(MainActivity.this, month, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

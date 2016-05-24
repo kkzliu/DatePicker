@@ -6,6 +6,35 @@
 
 **Here is begin of CN document.**
 
+
+##update
+
+* 为满足需求，在DatePicker中添加了月份切换监听
+   ```java
+   
+     public void setOnMonthChangeListener(OnMonthChangeListener onMonthChangeListener){
+           this.mOnMonthChangeListener = onMonthChangeListener;
+       }
+   
+       /**
+        * 在月份切换的时候调用（MonthView中年切换的时候月份切换会调用）
+        */
+       public interface OnMonthChangeListener {
+           void onMonthChange(String month);
+       }
+       ```
+   使用中通过
+   ```java
+   
+   picker.setOnMonthChangeListener(new DatePicker.OnMonthChangeListener() {
+                       @Override
+                       public void onMonthChange(String month) {
+                           Toast.makeText(MainActivity.this, month, Toast.LENGTH_SHORT).show();
+                       }
+                   });
+                   ```
+    来设置监听
+
 # 日历选择器
 灰常灰常简单的Android日历选择器~~（注：暂不支持横屏操作，农历节气有一到两天的误差）~~
 
