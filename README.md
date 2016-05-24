@@ -10,7 +10,7 @@
 ##update
 
 * 为满足需求，在DatePicker中添加了月份切换监听
-   ```java
+```java
    
      public void setOnMonthChangeListener(OnMonthChangeListener onMonthChangeListener){
            this.mOnMonthChangeListener = onMonthChangeListener;
@@ -23,7 +23,7 @@
            void onMonthChange(String month);
        }
        ```
-   使用中通过
+使用中通过
    ```java
    
    picker.setOnMonthChangeListener(new DatePicker.OnMonthChangeListener() {
@@ -33,7 +33,7 @@
                        }
                    });
                    ```
-    来设置监听
+   来设置监听
 
 # 日历选择器
 灰常灰常简单的Android日历选择器~~（注：暂不支持横屏操作，农历节气有一到两天的误差）~~
