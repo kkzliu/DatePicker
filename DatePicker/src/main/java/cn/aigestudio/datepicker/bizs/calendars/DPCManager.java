@@ -7,10 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import cn.aigestudio.datepicker.entities.DPInfo;
-import cn.aigestudio.datepicker.views.DatePicker;
 
 /**
  * 日期管理器
@@ -66,6 +64,10 @@ public final class DPCManager {
         this.c = c;
     }
 
+    public void clearDecorBG(){
+        DATE_CACHE.clear();
+
+    }
     /**
      * 设置有背景标识物的日期
      * <p/>
@@ -178,6 +180,8 @@ public final class DPCManager {
 
         Set<String> strHoliday = c.buildMonthHoliday(year, month);
         Set<String> strWeekend = c.buildMonthWeekend(year, month);
+
+
 
         Set<String> decorBG = DECOR_CACHE_BG.get(year + ":" + month);
         Set<String> decorTL = DECOR_CACHE_TL.get(year + ":" + month);

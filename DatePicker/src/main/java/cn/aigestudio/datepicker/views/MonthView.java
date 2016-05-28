@@ -21,9 +21,14 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Scroller;
+import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +36,7 @@ import java.util.Map;
 import cn.aigestudio.datepicker.bizs.calendars.DPCManager;
 import cn.aigestudio.datepicker.bizs.decors.DPDecor;
 import cn.aigestudio.datepicker.bizs.themes.DPTManager;
+import cn.aigestudio.datepicker.cons.ActionMode;
 import cn.aigestudio.datepicker.cons.DPMode;
 import cn.aigestudio.datepicker.entities.DPInfo;
 
@@ -63,6 +69,7 @@ public class MonthView extends View {
     private ScaleAnimationListener scaleAnimationListener;
 
     private DPMode mDPMode = DPMode.MULTIPLE;
+    private ActionMode mActionMode = ActionMode.NONE;
     private SlideMode mSlideMode;
     private DPDecor mDPDecor;
 
@@ -134,72 +141,86 @@ public class MonthView extends View {
                 lastPointY = (int) event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (isNewEvent) {
-                    if (Math.abs(lastPointX - event.getX()) > 100) {
-                        mSlideMode = SlideMode.HOR;
-                        isNewEvent = false;
-                    } else if (Math.abs(lastPointY - event.getY()) > 50) {
-                        mSlideMode = SlideMode.VER;
-                        isNewEvent = false;
+                if (mActionMode != ActionMode.NONE) {
+                    if (isNewEvent) {
+                        if (Math.abs(lastPointX - event.getX()) > 100) {
+                            mSlideMode = SlideMode.HOR;
+                            isNewEvent = false;
+                        } else if (Math.abs(lastPointY - event.getY()) > 50) {
+                            mSlideMode = SlideMode.VER;
+                            isNewEvent = false;
+                        }
                     }
-                }
-                if (mSlideMode == SlideMode.HOR) {
-                    int totalMoveX = (int) (lastPointX - event.getX()) + lastMoveX;
-                    smoothScrollTo(totalMoveX, indexYear * height);
-                } else if (mSlideMode == SlideMode.VER) {
-                    int totalMoveY = (int) (lastPointY - event.getY()) + lastMoveY;
-                    smoothScrollTo(width * indexMonth, totalMoveY);
+                    if (mSlideMode == SlideMode.HOR) {
+                        if (mActionMode == ActionMode.ALL || mActionMode == ActionMode.HOR) {
+                            int totalMoveX = (int) (lastPointX - event.getX()) + lastMoveX;
+                            smoothScrollTo(totalMoveX, indexYear * height);
+                        }
+                    } else if (mSlideMode == SlideMode.VER) {
+                        if (mActionMode == ActionMode.ALL || mActionMode == ActionMode.VER) {
+                            int totalMoveY = (int) (lastPointY - event.getY()) + lastMoveY;
+                            smoothScrollTo(width * indexMonth, totalMoveY);
+                        }
+                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (mSlideMode == SlideMode.VER) {
-                    if (Math.abs(lastPointY - event.getY()) > 25) {
-                        if (lastPointY < event.getY()) {
-                            if (Math.abs(lastPointY - event.getY()) >= criticalHeight) {
-                                indexYear--;
-                                centerYear = centerYear - 1;
-                            }
-                        } else if (lastPointY > event.getY()) {
-                            if (Math.abs(lastPointY - event.getY()) >= criticalHeight) {
-                                indexYear++;
-                                centerYear = centerYear + 1;
-                            }
-                        }
-                        buildRegion();
-                        computeDate();
-                        smoothScrollTo(width * indexMonth, height * indexYear);
-                        lastMoveY = height * indexYear;
-                    } else {
-                        defineRegion((int) event.getX(), (int) event.getY());
-                    }
-                } else if (mSlideMode == SlideMode.HOR) {
-                    if (Math.abs(lastPointX - event.getX()) > 25) {
-                        if (lastPointX > event.getX() &&
-                                Math.abs(lastPointX - event.getX()) >= criticalWidth) {
-                            indexMonth++;
-                            centerMonth = (centerMonth + 1) % 13;
-                            if (centerMonth == 0) {
-                                centerMonth = 1;
-                                centerYear++;
-                            }
-                        } else if (lastPointX < event.getX() &&
-                                Math.abs(lastPointX - event.getX()) >= criticalWidth) {
-                            indexMonth--;
-                            centerMonth = (centerMonth - 1) % 12;
-                            if (centerMonth == 0) {
-                                centerMonth = 12;
-                                centerYear--;
-                            }
-                        }
-                        buildRegion();
-                        computeDate();
-                        smoothScrollTo(width * indexMonth, indexYear * height);
-                        lastMoveX = width * indexMonth;
-                    } else {
-                        defineRegion((int) event.getX(), (int) event.getY());
-                    }
-                } else {
+                if (mActionMode == ActionMode.NONE) {
                     defineRegion((int) event.getX(), (int) event.getY());
+                } else {
+                    if (mSlideMode == SlideMode.VER) {
+                        if (mActionMode == ActionMode.ALL || mActionMode == ActionMode.VER) {
+                            if (Math.abs(lastPointY - event.getY()) > 25) {
+                                if (lastPointY < event.getY()) {
+                                    if (Math.abs(lastPointY - event.getY()) >= criticalHeight) {
+                                        indexYear--;
+                                        centerYear = centerYear - 1;
+                                    }
+                                } else if (lastPointY > event.getY()) {
+                                    if (Math.abs(lastPointY - event.getY()) >= criticalHeight) {
+                                        indexYear++;
+                                        centerYear = centerYear + 1;
+                                    }
+                                }
+                                buildRegion();
+                                computeDate();
+                                smoothScrollTo(width * indexMonth, height * indexYear);
+                                lastMoveY = height * indexYear;
+                            } else {
+                                defineRegion((int) event.getX(), (int) event.getY());
+                            }
+                        }
+                    } else if (mSlideMode == SlideMode.HOR) {
+                        if (mActionMode == ActionMode.ALL || mActionMode == ActionMode.HOR) {
+                            if (Math.abs(lastPointX - event.getX()) > 25) {
+                                if (lastPointX > event.getX() &&
+                                        Math.abs(lastPointX - event.getX()) >= criticalWidth) {
+                                    indexMonth++;
+                                    centerMonth = (centerMonth + 1) % 13;
+                                    if (centerMonth == 0) {
+                                        centerMonth = 1;
+                                        centerYear++;
+                                    }
+                                } else if (lastPointX < event.getX() &&
+                                        Math.abs(lastPointX - event.getX()) >= criticalWidth) {
+                                    indexMonth--;
+                                    centerMonth = (centerMonth - 1) % 12;
+                                    if (centerMonth == 0) {
+                                        centerMonth = 12;
+                                        centerYear--;
+                                    }
+                                }
+                                buildRegion();
+                                computeDate();
+                                smoothScrollTo(width * indexMonth, indexYear * height);
+                                lastMoveX = width * indexMonth;
+                            } else {
+                                defineRegion((int) event.getX(), (int) event.getY());
+                            }
+                        }
+                    } else {
+                        defineRegion((int) event.getX(), (int) event.getY());
+                    }
                 }
                 break;
         }
@@ -211,6 +232,7 @@ public class MonthView extends View {
         int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
         setMeasuredDimension(measureWidth, (int) (measureWidth * 6F / 7F));
     }
+
 
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
@@ -495,6 +517,14 @@ public class MonthView extends View {
         return mDPMode;
     }
 
+    ActionMode getActionMode() {
+        return mActionMode;
+    }
+
+    void setActionMode(ActionMode actionMode) {
+        mActionMode = actionMode;
+    }
+
     void setDate(int year, int month) {
         centerYear = year;
         centerMonth = month;
@@ -590,6 +620,7 @@ public class MonthView extends View {
                         regions.add(region);
                         final String date = centerYear + "-" + centerMonth + "-" +
                                 mCManager.obtainDPInfo(centerYear, centerMonth)[i][j].strG;
+
                         BGCircle circle = createCircle(
                                 region.getBounds().centerX() + indexMonth * width,
                                 region.getBounds().centerY() + indexYear * height);
@@ -645,6 +676,10 @@ public class MonthView extends View {
                         }
                         final String date = centerYear + "-" + centerMonth + "-" +
                                 mCManager.obtainDPInfo(centerYear, centerMonth)[i][j].strG;
+                        if(todayAgo(date)) {
+                            Toast.makeText(getContext(), "时光一去不复回", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         if (dateSelected.contains(date)) {
                             dateSelected.remove(date);
                             BGCircle circle = cirApr.get(date);
@@ -748,6 +783,73 @@ public class MonthView extends View {
             onDateChangeListener.onMonthChange(centerMonth);
         }
     }
+
+    /**
+     * 是否今天之前的日期
+     * @param date
+     * @return
+     */
+    private boolean todayAgo(String date){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyy-MM-dd");
+        try {
+            Date date1 = simpleDateFormat.parse(date);
+            Date date2 = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date2);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            Date date3 = new Date(year-1900, month, day );
+            if(date1.getTime()<date3.getTime()) {
+                calendar =null;
+                date1=null;
+                date2=null;
+                date3=null;
+                return true;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+    }
+
+    /**
+     * 下个月
+     */
+    public void next() {
+        indexMonth++;
+        centerMonth = (centerMonth + 1) % 13;
+        if (centerMonth == 0) {
+            centerMonth = 1;
+            centerYear++;
+        }
+        buildRegion();
+        computeDate();
+        smoothScrollTo(width * indexMonth, indexYear * height);
+        lastMoveX = width * indexMonth;
+    }
+
+    /**
+     * 上个月
+     */
+    public void previous() {
+        indexMonth--;
+        centerMonth = (centerMonth - 1) % 12;
+        if (centerMonth == 0) {
+            centerMonth = 12;
+            centerYear--;
+        }
+        buildRegion();
+        computeDate();
+        smoothScrollTo(width * indexMonth, indexYear * height);
+        lastMoveX = width * indexMonth;
+    }
+
 
     interface OnDateChangeListener {
         void onMonthChange(int month);

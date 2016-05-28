@@ -12,7 +12,7 @@ package cn.aigestudio.datepicker.bizs.languages;
 public class CN extends DPLManager {
     @Override
     public String[] titleMonth() {
-        return new String[]{"一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"};
+        return new String[]{"01月", "02月", "03月", "04月", "05月", "06月", "07月", "08月", "09月", "10月", "11月", "12月"};
     }
 
     @Override

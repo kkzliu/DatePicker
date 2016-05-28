@@ -1,25 +1,24 @@
 package cn.aigestudio.datepicker.demo;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.aigestudio.datepicker.bizs.calendars.DPCManager;
 import cn.aigestudio.datepicker.bizs.decors.DPDecor;
+import cn.aigestudio.datepicker.cons.ActionMode;
 import cn.aigestudio.datepicker.cons.DPMode;
 import cn.aigestudio.datepicker.views.DatePicker;
 
@@ -30,6 +29,8 @@ import cn.aigestudio.datepicker.views.DatePicker;
  * @author AigeStudio 2015-03-26
  */
 public class MainActivity extends Activity {
+    List<String> tmp = new ArrayList<>();
+    DatePicker picker1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,14 +108,19 @@ public class MainActivity extends Activity {
         tmpTR.add("2015-10-15");
         tmpTR.add("2015-10-16");
         DPCManager.getInstance().setDecorTR(tmpTR);
-
-        DatePicker picker = (DatePicker) findViewById(R.id.main_dp);
+        tmp.add("2015-7-8");
+        tmp.add("2015-7-16");
+        tmp.add("2015-8-16");
+        DPCManager.getInstance().clearDecorBG();
+        DPCManager.getInstance().setDecorBG(tmp);
+        final DatePicker picker = (DatePicker) findViewById(R.id.main_dp);
         picker.setDate(2015, 10);
         picker.setFestivalDisplay(false);
         picker.setTodayDisplay(false);
         picker.setHolidayDisplay(false);
         picker.setDeferredDisplay(false);
-        picker.setMode(DPMode.NONE);
+        picker.setMode(DPMode.MULTIPLE);
+        picker.setActionMode(ActionMode.ALL);
         picker.setDPDecor(new DPDecor() {
             @Override
             public void drawDecorTL(Canvas canvas, Rect rect, Paint paint, String data) {
@@ -151,50 +157,129 @@ public class MainActivity extends Activity {
                 }
             }
         });
-//        picker.setOnDateSelectedListener(new DatePicker.OnDateSelectedListener() {
-//            @Override
-//            public void onDateSelected(List<String> date) {
-//                String result = "";
-//                Iterator iterator = date.iterator();
-//                while (iterator.hasNext()) {
-//                    result += iterator.next();
-//                    if (iterator.hasNext()) {
-//                        result += "\n";
-//                    }
-//                }
-//                Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
-//            }
-//        });
+        picker.setOnDateSelectedListener(new DatePicker.OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(List<String> date) {
+                String result = "";
+                Iterator iterator = date.iterator();
+                while (iterator.hasNext()) {
+                    result += iterator.next();
+                    if (iterator.hasNext()) {
+                        result += "\n";
+                    }
+                }
+                Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
+                tmp.addAll(date);
+                DPCManager.getInstance().clearDecorBG();
+                DPCManager.getInstance().setDecorBG(tmp);
+
+
+
+            }
+        });
+
+        picker.setDPDecor(new DPDecor() {
+            @Override
+            public void drawDecorBG(Canvas canvas, Rect rect, Paint paint, String date) {
+                switch (date) {
+                    case "2015-7-1":
+                        paint.setColor(Color.RED);
+                        canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 2F, paint);
+                        break;
+                    case "2015-7-8":
+                    case "2015-8-16":
+                        paint.setColor(Color.YELLOW);
+                        canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 2F, paint);
+                        break;
+                    case "2015-7-16":
+                    case "2015-7-2":
+                        paint.setColor(Color.GREEN);
+                        canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 2F, paint);
+                        break;
+                }
+
+            }
+        });
+
 
         // 对话框下的DatePicker示例 Example in dialog
         Button btnPick = (Button) findViewById(R.id.main_btn);
         btnPick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
-                dialog.show();
-                DatePicker picker = new DatePicker(MainActivity.this);
-                picker.setDate(2015, 10);
-                picker.setMode(DPMode.SINGLE);
-                picker.setOnDatePickedListener(new DatePicker.OnDatePickedListener() {
-                    @Override
-                    public void onDatePicked(String date) {
-                        Toast.makeText(MainActivity.this, date, Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
-                    }
-                });
-                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                dialog.getWindow().setContentView(picker, params);
-                dialog.getWindow().setGravity(Gravity.CENTER);
-
-                picker.setOnMonthChangeListener(new DatePicker.OnMonthChangeListener() {
-                    @Override
-                    public void onMonthChange(String month) {
-                        Toast.makeText(MainActivity.this, month, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                picker.onDateSelected();
+//                final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
+//                dialog.show();
+//                picker1 = new DatePicker(MainActivity.this);
+//                picker1.setDate(2015, 7);
+//                picker1.setMode(DPMode.MULTIPLE);
+////                picker.setOnDateSelectedListener(new DatePicker.OnDateSelectedListener() {
+////                    @Override
+////                    public void onDatePicked(String date) {
+////                        Toast.makeText(MainActivity.this, date, Toast.LENGTH_LONG).show();
+////                        dialog.dismiss();
+////                    }
+////                });
+//                picker1.setOnDateSelectedListener(new DatePicker.OnDateSelectedListener() {
+//                    @Override
+//                    public void onDateSelected(List<String> date) {
+//                        String result = "";
+//                        Iterator iterator = date.iterator();
+//                        while (iterator.hasNext()) {
+//                            result += iterator.next();
+//                            if (iterator.hasNext()) {
+//                                result += "\n";
+//                            }
+//
+//                        }
+//                        Message message = mHandler.obtainMessage();
+//                        message.what = 0x11;
+//                        message.obj = date;
+//                        mHandler.sendMessage(message);
+//                        Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+//                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                dialog.getWindow().setContentView(picker1, params);
+//                dialog.getWindow().setGravity(Gravity.CENTER);
+//
+//                picker1.setOnMonthChangeListener(new DatePicker.OnMonthChangeListener() {
+//                    @Override
+//                    public void onMonthChange(String month) {
+//                        Toast.makeText(MainActivity.this, month, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//
+//
+//                tmp.add("2015-7-1");
+//                tmp.add("2015-7-8");
+//                tmp.add("2015-7-16");
+//                DPCManager.getInstance().clearDecorBG();
+//                DPCManager.getInstance().setDecorBG(tmp);
+//                picker1.setDPDecor(new DPDecor() {
+//                    @Override
+//                    public void drawDecorBG(Canvas canvas, Rect rect, Paint paint, String date) {
+//                        switch (date) {
+//                            case "2015-7-1":
+//                                paint.setColor(Color.RED);
+//                                canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 2F, paint);
+//                                break;
+//                            case "2015-7-8":
+//                                paint.setColor(Color.YELLOW);
+//                                canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 2F, paint);
+//                                break;
+//                            case "2015-7-16":
+//                            case "2015-7-2":
+//                                paint.setColor(Color.GREEN);
+//                                canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 2F, paint);
+//                                break;
+//                        }
+//
+//                    }
+//                });
             }
         });
     }
+
 }
