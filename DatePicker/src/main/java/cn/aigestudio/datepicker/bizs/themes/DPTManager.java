@@ -72,12 +72,27 @@ public final class DPTManager {
     }
 
     /**
+     *
+     * @return DPTheme# colorWeekendTitle()
+     */
+    public int colorWeekendTitle(){
+        return theme.colorWeekendTitle();
+    }
+
+    /**
      * @see DPTheme#colorToday()
      */
     public int colorToday() {
         return theme.colorToday();
     }
 
+    /**
+     * 正常的背景颜色
+     * @return
+     */
+    public int colorNormal(){
+        return theme.colorNormal();
+    }
     /**
      * @see DPTheme#colorG()
      */

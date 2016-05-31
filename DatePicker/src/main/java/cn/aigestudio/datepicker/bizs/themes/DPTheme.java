@@ -56,6 +56,12 @@ public abstract class DPTheme {
     public abstract int colorToday();
 
     /**
+     * 正常的背景颜色
+     * @return
+     */
+    public abstract int colorNormal();
+
+    /**
      * 公历文本颜色
      * 
      * Color of Gregorian text
@@ -90,4 +96,10 @@ public abstract class DPTheme {
      * @return 16进制颜色值 hex color
      */
     public abstract int colorHoliday();
+
+    /**
+     * 周视图 ,周末文本的颜色
+     * @return
+     */
+    public abstract int colorWeekendTitle();
 }

@@ -108,17 +108,17 @@ public class MainActivity extends Activity {
         tmpTR.add("2015-10-15");
         tmpTR.add("2015-10-16");
         DPCManager.getInstance().setDecorTR(tmpTR);
-        tmp.add("2015-7-8");
-        tmp.add("2015-7-16");
-        tmp.add("2015-8-16");
+        tmp.add("2016-5-8");
+        tmp.add("2016-5-16");
+        tmp.add("2016-5-16");
         DPCManager.getInstance().clearDecorBG();
         DPCManager.getInstance().setDecorBG(tmp);
         final DatePicker picker = (DatePicker) findViewById(R.id.main_dp);
-        picker.setDate(2015, 10);
-        picker.setFestivalDisplay(false);
-        picker.setTodayDisplay(false);
-        picker.setHolidayDisplay(false);
-        picker.setDeferredDisplay(false);
+        picker.setDate(2016, 5);
+        picker.setFestivalDisplay(true);
+        picker.setTodayDisplay(true);
+        picker.setHolidayDisplay(true);
+        picker.setDeferredDisplay(true);
         picker.setMode(DPMode.MULTIPLE);
         picker.setActionMode(ActionMode.ALL);
         picker.setDPDecor(new DPDecor() {
@@ -182,17 +182,17 @@ public class MainActivity extends Activity {
             @Override
             public void drawDecorBG(Canvas canvas, Rect rect, Paint paint, String date) {
                 switch (date) {
-                    case "2015-7-1":
+                    case "2015-5-1":
                         paint.setColor(Color.RED);
                         canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 2F, paint);
                         break;
-                    case "2015-7-8":
-                    case "2015-8-16":
+                    case "2016-5-8":
+                    case "2016-5-16":
                         paint.setColor(Color.YELLOW);
                         canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 2F, paint);
                         break;
-                    case "2015-7-16":
-                    case "2015-7-2":
+                    case "2016-6-16":
+                    case "2016-5-2":
                         paint.setColor(Color.GREEN);
                         canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 2F, paint);
                         break;
@@ -208,6 +208,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 picker.onDateSelected();
+                picker.clearDateSelected();
 //                final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
 //                dialog.show();
 //                picker1 = new DatePicker(MainActivity.this);

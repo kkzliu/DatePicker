@@ -369,19 +369,42 @@ public class MonthView extends View {
             mDPDecor.drawDecorBG(canvas, rect, mPaint,
                     centerYear + "-" + centerMonth + "-" + info.strG);
         }
+
         if (info.isToday && isTodayDisplay) {
             drawBGToday(canvas, rect);
         } else {
             if (isHolidayDisplay) drawBGHoliday(canvas, rect, info.isHoliday);
             if (isDeferredDisplay) drawBGDeferred(canvas, rect, info.isDeferred);
+            drawBGNormal(canvas,rect);
         }
     }
 
+    /**
+     * 正常
+     * @param canvas
+     * @param rect
+     */
+    private void drawBGNormal(Canvas canvas, Rect rect) {
+        mPaint.setColor(mTManager.colorNormal());
+        canvas.drawCircle(rect.centerX(), rect.centerY(), circleRadius / 2F, mPaint);
+    }
+
+    /**
+     * 今天
+     * @param canvas
+     * @param rect
+     */
     private void drawBGToday(Canvas canvas, Rect rect) {
         mPaint.setColor(mTManager.colorToday());
         canvas.drawCircle(rect.centerX(), rect.centerY(), circleRadius / 2F, mPaint);
     }
 
+    /**
+     * 假期
+     * @param canvas
+     * @param rect
+     * @param isHoliday
+     */
     private void drawBGHoliday(Canvas canvas, Rect rect, boolean isHoliday) {
         mPaint.setColor(mTManager.colorHoliday());
         if (isHoliday) canvas.drawCircle(rect.centerX(), rect.centerY(), circleRadius / 2F, mPaint);
@@ -493,8 +516,40 @@ public class MonthView extends View {
         }
     }
 
+    /**
+     * 获取已经选择的日期列表
+     * @return
+     */
     List<String> getDateSelected() {
         return dateSelected;
+    }
+
+    /**
+     * 清空已经选择的日期列表
+     */
+    void clearDateSelected(){
+        for (final String date:dateSelected) {
+            BGCircle circle = cirApr.get(date);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                ValueAnimator animScale = ObjectAnimator.ofInt(circle, "radius", circleRadius, 0);
+                animScale.setDuration(250);
+                animScale.setInterpolator(accelerateInterpolator);
+                animScale.addUpdateListener(scaleAnimationListener);
+                animScale.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        cirDpr.remove(date);
+                    }
+                });
+                animScale.start();
+                cirDpr.put(date, circle);
+            }
+            cirApr.remove(date);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                invalidate();
+            }
+        }
+        dateSelected.clear();
     }
 
     void setOnDateChangeListener(OnDateChangeListener onDateChangeListener) {

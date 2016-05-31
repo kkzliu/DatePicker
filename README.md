@@ -4,12 +4,12 @@
 
 ***
 
-**Here is begin of CN document.**
 
 
-##update
-* 为满足需求，在DatePicker中添加了月份切换监听
 
+#update(为满足需求对项目进行了改进)
+
+###1.添加月份切换监听
 
 ```Java
 ......
@@ -40,6 +40,24 @@ picker.setOnMonthChangeListener(new DatePicker.OnMonthChangeListener() {
 ```
 
 来设置监听
+
+###2.扩充了MonthView的功能
+增加了MonthView的滑动方向设定,ActionMode
+ALL 双向滑动
+HOR 只能横向滑动
+VER 只能纵向滑动
+NONE 不可滑动
+同时添加了左右切换的按钮
+
+###3.扩充了DPTheme
+
+###添加了装饰物的刷新等操作
+
+##预览图
+![](https://github.com/AigeStudio/DatePicker/blob/master/preview.gif)
+
+
+**Here is begin of CN document.**
 
 # 日历选择器
 灰常灰常简单的Android日历选择器~~（注：暂不支持横屏操作，农历节气有一到两天的误差）~~
