@@ -54,7 +54,7 @@ NONE 不可滑动
 ###添加了装饰物的刷新等操作
 
 ##预览图
-![](https://github.com/AigeStudio/DatePicker/blob/master/preview.gif)
+![](https://github.com/hqucsx/DatePicker/blob/master/preview.gif)
 
 
 **Here is begin of CN document.**
