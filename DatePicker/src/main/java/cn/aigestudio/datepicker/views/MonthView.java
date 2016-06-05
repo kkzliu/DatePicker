@@ -551,6 +551,31 @@ public class MonthView extends View {
         }
         dateSelected.clear();
     }
+    /**
+     * 清除某个已选日期
+     * @param date
+     */
+    void clearDateSingle(final String date){
+        BGCircle circle = cirApr.get(date);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            ValueAnimator animScale = ObjectAnimator.ofInt(circle, "radius", circleRadius, 0);
+            animScale.setDuration(250);
+            animScale.setInterpolator(accelerateInterpolator);
+            animScale.addUpdateListener(scaleAnimationListener);
+            animScale.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    cirDpr.remove(date);
+                }
+            });
+            animScale.start();
+            cirDpr.put(date, circle);
+        }
+        cirApr.remove(date);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            invalidate();
+        }
+    }
 
     void setOnDateChangeListener(OnDateChangeListener onDateChangeListener) {
         this.onDateChangeListener = onDateChangeListener;
@@ -851,15 +876,14 @@ public class MonthView extends View {
             Date date2 = new Date();
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date2);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            Date date3 = new Date(year-1900, month, day );
-            if(date1.getTime()<date3.getTime()) {
+            calendar.set(Calendar.MILLISECOND, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.HOUR, 0);
+            if(date1.getTime()<calendar.getTimeInMillis()) {
                 calendar =null;
                 date1=null;
                 date2=null;
-                date3=null;
                 return true;
             }
         } catch (ParseException e) {

@@ -233,6 +233,15 @@ public class DatePicker extends LinearLayout {
             monthView.clearDateSelected();
         }
     }
+    /**
+     * 清除某个已选日期
+     * @param date
+     */
+    public void clearDateSingle(String date){
+        if(monthView!=null){
+            monthView.clearDateSingle(date);
+        }
+    }
 
     public void setDPDecor(DPDecor decor) {
         monthView.setDPDecor(decor);
@@ -245,7 +254,7 @@ public class DatePicker extends LinearLayout {
      */
     public void setMode(DPMode mode) {
         if (mode != DPMode.MULTIPLE) {
-            tvRight.setVisibility(GONE);
+//            tvRight.setVisibility(GONE);
         }
         monthView.setDPMode(mode);
     }
