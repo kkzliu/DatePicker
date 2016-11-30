@@ -27,6 +27,6 @@ public class CN extends DPLManager {
 
     @Override
     public String[] titleWeek() {
-        return new String[]{"日", "一", "二", "三", "四", "五", "六"};
+        return new String[]{"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
     }
 }

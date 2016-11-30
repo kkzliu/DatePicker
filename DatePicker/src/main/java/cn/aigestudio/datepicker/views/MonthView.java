@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Scroller;
-import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -375,7 +374,7 @@ public class MonthView extends View {
         } else {
             if (isHolidayDisplay) drawBGHoliday(canvas, rect, info.isHoliday);
             if (isDeferredDisplay) drawBGDeferred(canvas, rect, info.isDeferred);
-            drawBGNormal(canvas,rect);
+            //drawBGNormal(canvas,rect);
         }
     }
 
@@ -757,7 +756,7 @@ public class MonthView extends View {
                         final String date = centerYear + "-" + centerMonth + "-" +
                                 mCManager.obtainDPInfo(centerYear, centerMonth)[i][j].strG;
                         if(todayAgo(date)) {
-                            Toast.makeText(getContext(), "时光一去不复回", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getContext(), "时光一去不复回", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         if (dateSelected.contains(date)) {

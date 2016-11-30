@@ -1,9 +1,15 @@
 buildscript {
+
+	ext.NeuxsReleases = nexusRoot + "/content/groups/public"
+   
     repositories {
+ 		maven {
+            url NeuxsReleases
+        }
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+         classpath 'com.android.tools.build:gradle:2.2.2'
     }
 }
 

@@ -64,9 +64,14 @@ public final class DPCManager {
         this.c = c;
     }
 
-    public void clearDecorBG(){
+    public void clearDecor(){
         DATE_CACHE.clear();
-
+        DECOR_CACHE_BG.clear();
+        DECOR_CACHE_TL.clear();
+        DECOR_CACHE_TR.clear();
+        DECOR_CACHE_T.clear();
+        DECOR_CACHE_L.clear();
+        DECOR_CACHE_R.clear();
     }
     /**
      * 设置有背景标识物的日期
@@ -161,15 +166,20 @@ public final class DPCManager {
 
     private void setDecor(List<String> date, HashMap<String, Set<String>> cache) {
         for (String str : date) {
-            int index = str.lastIndexOf("-");
-            String key = str.substring(0, index).replace("-", ":");
+            String[] ymd = str.split("-");
+            String key = ymKey(Integer.valueOf(ymd[0]), Integer.valueOf(ymd[1]));
             Set<String> days = cache.get(key);
             if (null == days) {
                 days = new HashSet<>();
             }
-            days.add(str.substring(index + 1, str.length()));
+            int day = Integer.valueOf(ymd[2]); // 去掉前面0
+            days.add(String.valueOf(day));
             cache.put(key, days);
         }
+    }
+
+    private String ymKey(int year, int month) {
+        return year + ":" + month;
     }
 
     private DPInfo[][] buildDPInfo(int year, int month) {
@@ -181,14 +191,12 @@ public final class DPCManager {
         Set<String> strHoliday = c.buildMonthHoliday(year, month);
         Set<String> strWeekend = c.buildMonthWeekend(year, month);
 
-
-
-        Set<String> decorBG = DECOR_CACHE_BG.get(year + ":" + month);
-        Set<String> decorTL = DECOR_CACHE_TL.get(year + ":" + month);
-        Set<String> decorT = DECOR_CACHE_T.get(year + ":" + month);
-        Set<String> decorTR = DECOR_CACHE_TR.get(year + ":" + month);
-        Set<String> decorL = DECOR_CACHE_L.get(year + ":" + month);
-        Set<String> decorR = DECOR_CACHE_R.get(year + ":" + month);
+        Set<String> decorBG = DECOR_CACHE_BG.get(ymKey(year, month));
+        Set<String> decorTL = DECOR_CACHE_TL.get(ymKey(year, month));
+        Set<String> decorT = DECOR_CACHE_T.get(ymKey(year, month));
+        Set<String> decorTR = DECOR_CACHE_TR.get(ymKey(year, month));
+        Set<String> decorL = DECOR_CACHE_L.get(ymKey(year, month));
+        Set<String> decorR = DECOR_CACHE_R.get(ymKey(year, month));
         for (int i = 0; i < info.length; i++) {
             for (int j = 0; j < info[i].length; j++) {
                 DPInfo tmp = new DPInfo();

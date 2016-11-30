@@ -183,7 +183,9 @@ public class DatePicker extends LinearLayout {
                 tvMonth.setText(mLManager.titleMonth()[month - 1]);
                 //年份切换的时候会自动调用月份切换，所以不需要在年份切换里加监听
                 if(mOnMonthChangeListener!=null)
-                    mOnMonthChangeListener.onMonthChange(tvYear.getText().toString()+"-"+(month));
+                    mOnMonthChangeListener.onMonthChange(
+                            (tvYear.getText().toString()+"-"+tvMonth.getText().toString())
+                                    .replace("年","").replace("月", ""));
             }
 
             @Override
